@@ -96,7 +96,28 @@
             {{/tr~}}
         </span>
         </a>
-        <span class="recipient_row_date {{#if date_unchanged}}recipient_row_date_unchanged{{/if}}">{{{date}}}</span>
+            <span style="float:left; font-size:80%;"><a href="#"
+                                        onclick="clearMessageHistory();return false;">[Clear message history]</a></span>
+            <span class="recipient_row_date {{#if date_unchanged}}recipient_row_date_unchanged{{/if}}">{{{date}}}</span>
+        </div>
     </div>
-</div>
 {{/if}}
+
+<script>
+    function clearMessageHistory() {
+        $('div.message_row.private-message').each(function (idx, o) {
+            var messageId = $(o).attr('data-message-id');
+
+            $.ajax({
+                url: '/json/messages/' + messageId,
+                type: 'DELETE',
+                success: function (result) {
+                    console.log('Message ' + messageId + ' deleted successfully.');
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to delete message ' + messageId + ': ' + error);
+                }
+            });
+        })
+    }
+</script>
