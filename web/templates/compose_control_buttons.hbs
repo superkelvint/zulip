@@ -1,4 +1,52 @@
 <div class="compose-control-buttons-container order-1">
+    <style>
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .stop-recording-button {
+            display: none;
+            position: relative;
+            padding: 17.5px;
+            border: none;
+            cursor: pointer;
+        }
+        .stop-recording-button::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: red;
+            animation: flash 1s infinite;
+        }
+    </style>
+    <div class="compose_control_button_container" data-tippy-content="{{t 'Record voice memo' }}">
+        <a role="button" class="start-recording-button compose_control_button zulip-icon" aria-label="{{t 'Record voice memo' }}" tabindex=0>
+            <svg height="10px" width="10px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 261.075 261.075" xml:space="preserve">
+<g>
+	<g>
+		<path style="fill:#010002;" d="M126.855,174.05h5.744c22.447,0,40.641-18.194,40.641-40.641V40.641
+			C173.24,18.194,155.046,0,132.599,0h-5.744c-22.447,0-40.641,18.194-40.641,40.641v92.769
+			C86.215,155.856,104.408,174.05,126.855,174.05z"/>
+        <path style="fill:#010002;" d="M124.288,201.147v43.61H86.215c-4.504,0-8.159,3.65-8.159,8.159s3.655,8.159,8.159,8.159h92.464
+			c4.504,0,8.159-3.65,8.159-8.159s-3.655-8.159-8.159-8.159h-38.073v-43.823c34.832-3.138,63.262-34.44,63.262-71.208
+			c0-4.509-3.655-8.159-8.159-8.159s-8.159,3.65-8.159,8.159c0,29.92-24.122,55.201-52.672,55.201h-8.686
+			c-28.544,0-52.666-24.699-52.666-53.939c0-4.509-3.655-8.159-8.159-8.159s-8.159,3.65-8.159,8.159
+			C57.208,169.073,87.134,200.109,124.288,201.147z"/>
+	</g>
+</g>
+</svg>
+        </a>
+        <a class="stop-recording-button"></a>
+    </div>
+    <script src="/static/js/WebAudioRecorder.min.js"></script>
+    <script src="/static/js/voicememo.js"></script>
     <input type="file" class="file_input notvisible" multiple />
     <div class="compose_control_button_container" data-tooltip-template-id="preview-tooltip" data-tippy-maxWidth="none">
         <a role="button" class="markdown_preview compose_control_button zulip-icon zulip-icon-preview" aria-label="{{t 'Preview' }}" tabindex=0></a>

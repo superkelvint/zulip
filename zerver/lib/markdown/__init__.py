@@ -1246,6 +1246,52 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
         if info["remove"] is not None:
             info["parent"].remove(info["remove"])
 
+    def is_audio(self, url: str) -> bool:
+        if not self.zmd.image_preview_enabled:
+            return False
+
+        url_type = mimetypes.guess_type(url)[0]
+        # Only support widely used audio formats
+        supported_mimetypes = ["audio/mpeg", "audio/mp3"]
+        return url_type in supported_mimetypes
+
+    def add_audio(
+        self,
+        root: Element,
+        url: str,
+        title: Optional[str] = None,
+        class_attr: str = "message_inline_audio",
+        insertion_index: Optional[int] = None,
+    ) -> None:
+        if insertion_index is not None:
+            div = Element("div")
+            root.insert(insertion_index, div)
+        else:
+            div = SubElement(root, "div")
+
+        div.set("class", class_attr)
+        # Add `a` tag so that the syntax of audio matches with
+        # other media types and clients don't get confused.
+        a = SubElement(div, "a")
+        a.set("href", url)
+        if title:
+            a.set("title", title)
+        audio = SubElement(a, "audio")
+        audio.set("src", url)
+        audio.set("controls", "controls")
+        audio.set("preload", "metadata")
+
+    def handle_audio_inlining(
+        self, root: Element, found_url: ResultWithFamily[tuple[str, Optional[str]]]
+    ) -> None:
+        info = self.get_inlining_information(root, found_url)
+        url = found_url.result[0]
+
+        self.add_audio(info["parent"], url, info["title"], insertion_index=info["index"])
+
+        if info["remove"] is not None:
+            info["parent"].remove(info["remove"])
+
     @override
     def run(self, root: Element) -> None:
         # Get all URLs from the blob
@@ -1297,6 +1343,10 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
             if url in unique_previewable_urls and url not in processed_urls:
                 processed_urls.add(url)
             else:
+                continue
+
+            if self.is_audio(url):
+                self.handle_audio_inlining(root, found_url)
                 continue
 
             if self.is_video(url):
