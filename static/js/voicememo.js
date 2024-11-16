@@ -33,7 +33,7 @@ if (typeof initializeMic === 'undefined') {
                 uploadFile(audioFile);
             };
             current_audio_recorder.setOptions({
-                timeLimit: 180,
+                timeLimit: 600,
                 encodeAfterRecord: encodeAfterRecord,
                 ogg: {quality: 0.5},
                 mp3: {bitRate: 256}
